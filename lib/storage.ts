@@ -1,9 +1,10 @@
-import { Client, Invoice, CompanyInfo } from "./types";
+import { Client, Invoice, CompanyInfo, SavedItem } from "./types";
 
 const CLIENTS_KEY = "invoice-app-clients";
 const INVOICES_KEY = "invoice-app-invoices";
 const INVOICE_COUNTER_KEY = "invoice-app-counter";
 const COMPANY_INFO_KEY = "invoice-app-company";
+const SAVED_ITEMS_KEY = "invoice-app-saved-items";
 
 // Generate unique ID
 export function generateId(): string {
@@ -102,4 +103,33 @@ export function getCompanyInfo(): CompanyInfo {
 
 export function saveCompanyInfo(info: CompanyInfo): void {
     localStorage.setItem(COMPANY_INFO_KEY, JSON.stringify(info));
+}
+
+// Saved Items operations (for reusing items across invoices)
+export function getSavedItems(): SavedItem[] {
+    if (typeof window === "undefined") return [];
+    const data = localStorage.getItem(SAVED_ITEMS_KEY);
+    return data ? JSON.parse(data) : [];
+}
+
+export function saveSavedItem(item: SavedItem): void {
+    const items = getSavedItems();
+    const existingIndex = items.findIndex((i) => i.id === item.id);
+
+    if (existingIndex >= 0) {
+        items[existingIndex] = item;
+    } else {
+        items.push(item);
+    }
+
+    localStorage.setItem(SAVED_ITEMS_KEY, JSON.stringify(items));
+}
+
+export function deleteSavedItem(itemId: string): void {
+    const items = getSavedItems().filter((i) => i.id !== itemId);
+    localStorage.setItem(SAVED_ITEMS_KEY, JSON.stringify(items));
+}
+
+export function getSavedItemById(itemId: string): SavedItem | undefined {
+    return getSavedItems().find((i) => i.id === itemId);
 }

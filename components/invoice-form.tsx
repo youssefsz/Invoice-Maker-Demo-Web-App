@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Invoice, InvoiceItem, CURRENCIES, getCurrencySymbol, CompanyInfo } from "@/lib/types";
-import { getClientById, getClients, generateId, generateInvoiceNumber, saveInvoice, deleteInvoice, saveClient } from "@/lib/storage";
+import { Invoice, InvoiceItem, CURRENCIES, getCurrencySymbol, CompanyInfo, SavedItem } from "@/lib/types";
+import { getClientById, getClients, generateId, generateInvoiceNumber, saveInvoice, deleteInvoice, saveClient, getSavedItems, saveSavedItem } from "@/lib/storage";
 import { getInvoiceSubtotal, getTaxAmount, getInvoiceTotal } from "@/lib/calculations";
 import { InvoicePreview } from "./invoice-preview";
 import { Button } from "@/components/ui/button";
@@ -45,7 +45,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { X, Calendar, FileText, User, Plus, Trash2, Eye, Loader2 } from "lucide-react";
+import { X, Calendar, FileText, User, Plus, Trash2, Eye, Loader2, Package } from "lucide-react";
 import { Client } from "@/lib/types";
 import { InvoiceLanguage, LANGUAGE_OPTIONS } from "@/lib/translations";
 import html2canvas from "html2canvas-pro";
@@ -116,8 +116,13 @@ export function InvoiceForm({ existingInvoice, onClose, onSave, onDelete, compan
     const client = clientId ? getClientById(clientId) : null;
     const currencySymbol = getCurrencySymbol(currency);
 
+    // Saved items for quick selection
+    const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
+    const [showSavedItemsPicker, setShowSavedItemsPicker] = useState(false);
+
     useEffect(() => {
         setClients(getClients());
+        setSavedItems(getSavedItems());
     }, []);
 
     // Generate PDF blob for preview
@@ -261,9 +266,39 @@ export function InvoiceForm({ existingInvoice, onClose, onSave, onDelete, compan
             setItems(newItems);
         } else {
             setItems([...items, editingItem]);
+
+            // Save new item to saved items for future reuse (only if it has a name)
+            if (editingItem.name.trim()) {
+                const existingSavedItem = savedItems.find(
+                    (si) => si.name.toLowerCase() === editingItem.name.toLowerCase()
+                );
+                if (!existingSavedItem) {
+                    const newSavedItem: SavedItem = {
+                        id: generateId(),
+                        name: editingItem.name,
+                        defaultPrice: editingItem.pricePerUnit,
+                        createdAt: new Date().toISOString(),
+                    };
+                    saveSavedItem(newSavedItem);
+                    setSavedItems(getSavedItems());
+                }
+            }
         }
         setShowItemEditor(false);
         setEditingItem(null);
+    };
+
+    // Handle selecting a saved item to quickly add
+    const handleSelectSavedItem = (savedItem: SavedItem) => {
+        setEditingItem({
+            id: generateId(),
+            name: savedItem.name,
+            quantity: 1,
+            pricePerUnit: savedItem.defaultPrice,
+            discount: 0,
+            taxable: false,
+        });
+        setShowSavedItemsPicker(false);
     };
 
     const handleRemoveItem = (id: string) => {
@@ -335,8 +370,8 @@ export function InvoiceForm({ existingInvoice, onClose, onSave, onDelete, compan
                                         <button
                                             key={option.value}
                                             className={`w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${dueDate === option.value
-                                                    ? "bg-foreground text-background"
-                                                    : "hover:bg-gray-100"
+                                                ? "bg-foreground text-background"
+                                                : "hover:bg-gray-100"
                                                 }`}
                                             onClick={() => {
                                                 setDueDate(option.value);
@@ -695,6 +730,30 @@ export function InvoiceForm({ existingInvoice, onClose, onSave, onDelete, compan
                     </DialogHeader>
                     {editingItem && (
                         <div className="space-y-4 py-4">
+                            {/* Saved Items Picker - Only show when adding new item */}
+                            {savedItems.length > 0 && !items.some((i) => i.id === editingItem.id) && (
+                                <div className="space-y-2">
+                                    <Label className="text-muted-foreground text-xs uppercase tracking-wide">Quick Add from Saved Items</Label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {savedItems.slice(0, 6).map((si) => (
+                                            <button
+                                                key={si.id}
+                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-foreground text-sm hover:bg-muted/80 transition-colors border border-border"
+                                                onClick={() => handleSelectSavedItem(si)}
+                                            >
+                                                <Package className="h-3 w-3" />
+                                                {si.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    {savedItems.length > 6 && (
+                                        <p className="text-xs text-muted-foreground">
+                                            +{savedItems.length - 6} more items in Settings
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+
                             <div className="space-y-2">
                                 <Label>Name</Label>
                                 <Input

@@ -26,6 +26,14 @@ export interface InvoiceItem {
     taxable: boolean;
 }
 
+// Saved item type for reusable items
+export interface SavedItem {
+    id: string;
+    name: string;
+    defaultPrice: number;
+    createdAt: string;
+}
+
 // Invoice type
 export interface Invoice {
     id: string;
