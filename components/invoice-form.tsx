@@ -39,6 +39,12 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Card } from "@/components/ui/card";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { X, Calendar, FileText, User, Plus, Trash2, Eye, Loader2 } from "lucide-react";
 import { Client } from "@/lib/types";
 import { InvoiceLanguage, LANGUAGE_OPTIONS } from "@/lib/translations";
@@ -85,6 +91,10 @@ export function InvoiceForm({ existingInvoice, onClose, onSave, onDelete, compan
     const [isPdfLoading, setIsPdfLoading] = useState(false);
     const [showPreviewLanguageDialog, setShowPreviewLanguageDialog] = useState(false);
     const [previewLanguage, setPreviewLanguage] = useState<InvoiceLanguage>("en");
+    const [issueDate, setIssueDate] = useState<Date>(
+        existingInvoice?.createdAt ? new Date(existingInvoice.createdAt) : new Date()
+    );
+    const [showIssueDatePicker, setShowIssueDatePicker] = useState(false);
 
     const previewRef = useRef<HTMLDivElement>(null);
     const client = clientId ? getClientById(clientId) : null;
@@ -193,7 +203,7 @@ export function InvoiceForm({ existingInvoice, onClose, onSave, onDelete, compan
         const invoice: Invoice = {
             id: existingInvoice?.id || generateId(),
             ...invoiceData,
-            createdAt: existingInvoice?.createdAt || new Date().toISOString(),
+            createdAt: issueDate.toISOString(),
             updatedAt: new Date().toISOString(),
         };
 
@@ -262,14 +272,13 @@ export function InvoiceForm({ existingInvoice, onClose, onSave, onDelete, compan
     };
 
     // Format date for display
-    const formatDateChip = (dateString?: string) => {
-        if (!dateString) return "Today";
-        const date = new Date(dateString);
+    const formatDateChip = (date: Date) => {
         const now = new Date();
+        const prefix = isPaid ? "Paid" : "Issued";
         if (date.toDateString() === now.toDateString()) {
-            return "Issued Today";
+            return `${prefix} Today`;
         }
-        return `Issued ${date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+        return `${prefix} ${date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
     };
 
     // Extract invoice number without prefix
@@ -289,21 +298,40 @@ export function InvoiceForm({ existingInvoice, onClose, onSave, onDelete, compan
                         <X className="h-5 w-5" />
                     </Button>
                     <h1 className="font-semibold text-lg">
-                        {existingInvoice ? "Edit Invoice" : "New Invoice"}
+                        {existingInvoice ? (isPaid ? "Edit Receipt" : "Edit Invoice") : "New Invoice"}
                     </h1>
                     <div className="w-10" /> {/* Spacer for centering */}
                 </div>
 
                 {/* Date/Invoice Chips */}
                 <div className="flex gap-2 px-4 pb-4 flex-wrap">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-sm">
-                        <Calendar className="h-4 w-4 text-gray-500" />
-                        <span>No Due Date</span>
-                    </div>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-sm">
-                        <Calendar className="h-4 w-4 text-gray-500" />
-                        <span>{formatDateChip(existingInvoice?.createdAt)}</span>
-                    </div>
+                    {!isPaid && (
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-sm">
+                            <Calendar className="h-4 w-4 text-gray-500" />
+                            <span>No Due Date</span>
+                        </div>
+                    )}
+                    <Popover open={showIssueDatePicker} onOpenChange={setShowIssueDatePicker}>
+                        <PopoverTrigger asChild>
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                                <Calendar className="h-4 w-4 text-gray-500" />
+                                <span>{formatDateChip(issueDate)}</span>
+                            </div>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                            <CalendarComponent
+                                mode="single"
+                                selected={issueDate}
+                                onSelect={(date) => {
+                                    if (date) {
+                                        setIssueDate(date);
+                                        setShowIssueDatePicker(false);
+                                    }
+                                }}
+                                initialFocus
+                            />
+                        </PopoverContent>
+                    </Popover>
                     <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-sm">
                         <FileText className="h-4 w-4 text-gray-500" />
                         <span>{invoiceNum}</span>

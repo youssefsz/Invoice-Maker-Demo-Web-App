@@ -75,7 +75,7 @@ export const ReceiptPreview = forwardRef<HTMLDivElement, ReceiptPreviewProps>(
                             {receiptNum}
                         </p>
                         <p style={{ fontSize: "14px", color: "#666", margin: "2px 0 0 0" }}>
-                            {t.paidDate} {formatDate(invoice.updatedAt)}
+                            {t.paidDate} {formatDate(invoice.createdAt)}
                         </p>
                         {/* Simple Paid Badge */}
                         <div style={{
