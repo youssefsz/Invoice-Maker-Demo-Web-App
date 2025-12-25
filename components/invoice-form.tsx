@@ -95,6 +95,22 @@ export function InvoiceForm({ existingInvoice, onClose, onSave, onDelete, compan
         existingInvoice?.createdAt ? new Date(existingInvoice.createdAt) : new Date()
     );
     const [showIssueDatePicker, setShowIssueDatePicker] = useState(false);
+    const [dueDate, setDueDate] = useState<"none" | "receipt" | "10" | "15" | "30">("none");
+    const [showDueDatePicker, setShowDueDatePicker] = useState(false);
+
+    // Due date options
+    const dueDateOptions = [
+        { value: "none" as const, label: "No due date" },
+        { value: "receipt" as const, label: "On receipt" },
+        { value: "10" as const, label: "10 days" },
+        { value: "15" as const, label: "15 days" },
+        { value: "30" as const, label: "30 days" },
+    ];
+
+    const getDueDateLabel = () => {
+        const option = dueDateOptions.find(o => o.value === dueDate);
+        return option?.label || "No due date";
+    };
 
     const previewRef = useRef<HTMLDivElement>(null);
     const client = clientId ? getClientById(clientId) : null;
@@ -306,10 +322,33 @@ export function InvoiceForm({ existingInvoice, onClose, onSave, onDelete, compan
                 {/* Date/Invoice Chips */}
                 <div className="flex gap-2 px-4 pb-4 flex-wrap">
                     {!isPaid && (
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-sm">
-                            <Calendar className="h-4 w-4 text-gray-500" />
-                            <span>No Due Date</span>
-                        </div>
+                        <Popover open={showDueDatePicker} onOpenChange={setShowDueDatePicker}>
+                            <PopoverTrigger asChild>
+                                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                                    <Calendar className="h-4 w-4 text-gray-500" />
+                                    <span>{getDueDateLabel()}</span>
+                                </div>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-44 p-1" align="start">
+                                <div className="flex flex-col">
+                                    {dueDateOptions.map((option) => (
+                                        <button
+                                            key={option.value}
+                                            className={`w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${dueDate === option.value
+                                                    ? "bg-foreground text-background"
+                                                    : "hover:bg-gray-100"
+                                                }`}
+                                            onClick={() => {
+                                                setDueDate(option.value);
+                                                setShowDueDatePicker(false);
+                                            }}
+                                        >
+                                            {option.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </PopoverContent>
+                        </Popover>
                     )}
                     <Popover open={showIssueDatePicker} onOpenChange={setShowIssueDatePicker}>
                         <PopoverTrigger asChild>
