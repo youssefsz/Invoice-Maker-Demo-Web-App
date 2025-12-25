@@ -65,7 +65,7 @@ export default function Home() {
               className="text-foreground transition-all duration-200 hover:scale-105 active:scale-95"
             >
               <Link href="/settings">
-                <Settings className="h-6 w-6 stroke-[1.5]" />
+                <Settings className="size-6" />
               </Link>
             </Button>
 
