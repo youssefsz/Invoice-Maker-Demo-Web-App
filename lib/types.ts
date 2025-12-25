@@ -1,0 +1,63 @@
+// Company/Business Profile type
+export interface CompanyInfo {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+}
+
+// Client type
+export interface Client {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    createdAt: string;
+}
+
+// Invoice item type
+export interface InvoiceItem {
+    id: string;
+    name: string;
+    quantity: number;
+    pricePerUnit: number;
+    discount: number; // percentage
+    taxable: boolean;
+}
+
+// Invoice type
+export interface Invoice {
+    id: string;
+    invoiceNumber: string;
+    clientId: string;
+    currency: string;
+    note: string;
+    items: InvoiceItem[];
+    taxRate: number; // percentage
+    isPaid: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
+// Currency options
+export const CURRENCIES = [
+    { code: "USD", symbol: "$", name: "US Dollar" },
+    { code: "EUR", symbol: "€", name: "Euro" },
+    { code: "GBP", symbol: "£", name: "British Pound" },
+    { code: "JPY", symbol: "¥", name: "Japanese Yen" },
+    { code: "CAD", symbol: "C$", name: "Canadian Dollar" },
+    { code: "AUD", symbol: "A$", name: "Australian Dollar" },
+    { code: "CHF", symbol: "CHF", name: "Swiss Franc" },
+    { code: "CNY", symbol: "¥", name: "Chinese Yuan" },
+    { code: "INR", symbol: "₹", name: "Indian Rupee" },
+    { code: "TND", symbol: "TND", name: "Tunisian Dinar" },
+] as const;
+
+export type CurrencyCode = (typeof CURRENCIES)[number]["code"];
+
+// Helper to get currency symbol
+export function getCurrencySymbol(code: string): string {
+    const currency = CURRENCIES.find((c) => c.code === code);
+    return currency?.symbol || code;
+}
