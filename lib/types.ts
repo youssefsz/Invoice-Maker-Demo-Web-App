@@ -4,6 +4,9 @@ export interface CompanyInfo {
     email: string;
     phone: string;
     address: string;
+    bankName?: string;
+    iban?: string;
+    swift?: string;
 }
 
 // Client type
@@ -34,6 +37,9 @@ export interface SavedItem {
     createdAt: string;
 }
 
+// Due date options
+export type DueDateOption = "none" | "receipt" | "10" | "15" | "30";
+
 // Invoice type
 export interface Invoice {
     id: string;
@@ -44,6 +50,7 @@ export interface Invoice {
     items: InvoiceItem[];
     taxRate: number; // percentage
     isPaid: boolean;
+    dueDate: DueDateOption;
     createdAt: string;
     updatedAt: string;
 }

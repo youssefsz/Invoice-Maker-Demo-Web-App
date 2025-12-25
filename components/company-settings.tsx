@@ -99,6 +99,45 @@ export function CompanySettings({ open, onOpenChange, onSave }: CompanySettingsP
                             placeholder="123 Business St, City, Country"
                         />
                     </div>
+
+                    <div className="pt-4 border-t">
+                        <h4 className="font-medium mb-4">Payment Details</h4>
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="bank-name">Bank Name</Label>
+                                <Input
+                                    id="bank-name"
+                                    value={companyInfo.bankName || ""}
+                                    onChange={(e) =>
+                                        setCompanyInfo({ ...companyInfo, bankName: e.target.value })
+                                    }
+                                    placeholder="Your Bank Name"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="iban">IBAN</Label>
+                                <Input
+                                    id="iban"
+                                    value={companyInfo.iban || ""}
+                                    onChange={(e) =>
+                                        setCompanyInfo({ ...companyInfo, iban: e.target.value })
+                                    }
+                                    placeholder="FR76 1234..."
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="swift">SWIFT/BIC</Label>
+                                <Input
+                                    id="swift"
+                                    value={companyInfo.swift || ""}
+                                    onChange={(e) =>
+                                        setCompanyInfo({ ...companyInfo, swift: e.target.value })
+                                    }
+                                    placeholder="ABCD..."
+                                />
+                            </div>
+                        </div>
+                    </div>
                     <Button
                         onClick={handleSave}
                         className="w-full mt-4 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"

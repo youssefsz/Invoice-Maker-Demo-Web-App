@@ -95,7 +95,9 @@ export function InvoiceForm({ existingInvoice, onClose, onSave, onDelete, compan
         existingInvoice?.createdAt ? new Date(existingInvoice.createdAt) : new Date()
     );
     const [showIssueDatePicker, setShowIssueDatePicker] = useState(false);
-    const [dueDate, setDueDate] = useState<"none" | "receipt" | "10" | "15" | "30">("none");
+    const [dueDate, setDueDate] = useState<"none" | "receipt" | "10" | "15" | "30">(
+        existingInvoice?.dueDate || "none"
+    );
     const [showDueDatePicker, setShowDueDatePicker] = useState(false);
 
     // Due date options
@@ -179,7 +181,7 @@ export function InvoiceForm({ existingInvoice, onClose, onSave, onDelete, compan
         } finally {
             setIsPdfLoading(false);
         }
-    }, [invoiceNumber, clientId, currency, note, items, taxRate, isPaid, client, pdfBlobUrl, previewLanguage]);
+    }, [invoiceNumber, clientId, currency, note, items, taxRate, isPaid, client, pdfBlobUrl, previewLanguage, dueDate]);
 
     // Generate PDF when preview is opened
     useEffect(() => {
@@ -205,6 +207,7 @@ export function InvoiceForm({ existingInvoice, onClose, onSave, onDelete, compan
         items,
         taxRate,
         isPaid,
+        dueDate,
     };
 
     const subtotal = getInvoiceSubtotal(items);

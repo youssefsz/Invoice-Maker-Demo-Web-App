@@ -149,7 +149,7 @@ export const InvoicePreview = forwardRef<HTMLDivElement, InvoicePreviewProps>(
                                     fontSize: "12px",
                                     fontWeight: "500",
                                     color: "#666",
-                                    width: "45%"
+                                    width: "40%"
                                 }}>
                                     {t.description}
                                 </th>
@@ -179,7 +179,7 @@ export const InvoicePreview = forwardRef<HTMLDivElement, InvoicePreviewProps>(
                                     fontSize: "12px",
                                     fontWeight: "500",
                                     color: "#666",
-                                    width: "25%"
+                                    width: "30%"
                                 }}>
                                     {t.amount}
                                 </th>
@@ -354,6 +354,51 @@ export const InvoicePreview = forwardRef<HTMLDivElement, InvoicePreviewProps>(
                         <p style={{ fontSize: "14px", color: "#666", margin: 0, whiteSpace: "pre-wrap" }}>
                             {invoice.note}
                         </p>
+                    </div>
+                )}
+
+                {/* Payment Conditions & Bank Details (Only if NOT paid) */}
+                {!invoice.isPaid && (
+                    <div style={{ marginTop: "32px" }}>
+                        {invoice.dueDate && invoice.dueDate !== "none" && (
+                            <>
+                                <p style={{ fontSize: "12px", fontWeight: "bold", color: "#1a1a1a", margin: "0 0 4px 0" }}>
+                                    {t.paymentConditions}
+                                </p>
+                                <p style={{ fontSize: "12px", color: "#1a1a1a", margin: "0 0 12px 0" }}>
+                                    {(() => {
+                                        switch (invoice.dueDate) {
+                                            case "receipt":
+                                                return t.paymentDueReceipt;
+                                            case "10":
+                                                return t.paymentDue10Days;
+                                            case "15":
+                                                return t.paymentDue15Days;
+                                            case "30":
+                                                return t.paymentDue30Days;
+                                            default:
+                                                return "";
+                                        }
+                                    })()}
+                                </p>
+                            </>
+                        )}
+
+                        {companyInfo?.bankName && (
+                            <p style={{ fontSize: "12px", color: "#1a1a1a", margin: "0" }}>
+                                {companyInfo.bankName}
+                            </p>
+                        )}
+                        {companyInfo?.iban && (
+                            <p style={{ fontSize: "12px", color: "#1a1a1a", margin: "0" }}>
+                                IBAN: {companyInfo.iban}
+                            </p>
+                        )}
+                        {companyInfo?.swift && (
+                            <p style={{ fontSize: "12px", color: "#1a1a1a", margin: "0" }}>
+                                SWIFT/BIC: {companyInfo.swift}
+                            </p>
+                        )}
                     </div>
                 )}
 

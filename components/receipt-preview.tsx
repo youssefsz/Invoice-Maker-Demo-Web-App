@@ -162,7 +162,7 @@ export const ReceiptPreview = forwardRef<HTMLDivElement, ReceiptPreviewProps>(
                                     fontSize: "12px",
                                     fontWeight: "500",
                                     color: "#666",
-                                    width: "45%"
+                                    width: "40%"
                                 }}>
                                     {t.description}
                                 </th>
@@ -192,7 +192,7 @@ export const ReceiptPreview = forwardRef<HTMLDivElement, ReceiptPreviewProps>(
                                     fontSize: "12px",
                                     fontWeight: "500",
                                     color: "#666",
-                                    width: "25%"
+                                    width: "30%"
                                 }}>
                                     {t.amount}
                                 </th>

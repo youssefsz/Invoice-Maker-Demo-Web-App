@@ -30,6 +30,11 @@ export interface InvoiceTranslations {
     thankYou: string;
     paidInFull: string;
     receiptNumber: string;
+    paymentConditions: string;
+    paymentDueReceipt: string;
+    paymentDue10Days: string;
+    paymentDue15Days: string;
+    paymentDue30Days: string;
 }
 
 const translations: Record<InvoiceLanguage, InvoiceTranslations> = {
@@ -61,6 +66,11 @@ const translations: Record<InvoiceLanguage, InvoiceTranslations> = {
         thankYou: "Thank you for your payment!",
         paidInFull: "PAID IN FULL",
         receiptNumber: "Receipt #",
+        paymentConditions: "Payment Terms & Conditions",
+        paymentDueReceipt: "Payment is due on receipt",
+        paymentDue10Days: "Payment is due in 10 days",
+        paymentDue15Days: "Payment is due in 15 days",
+        paymentDue30Days: "Payment is due in 30 days",
     },
     fr: {
         invoice: "FACTURE",
@@ -90,6 +100,11 @@ const translations: Record<InvoiceLanguage, InvoiceTranslations> = {
         thankYou: "Merci pour votre paiement!",
         paidInFull: "PAYÉ EN TOTALITÉ",
         receiptNumber: "Reçu #",
+        paymentConditions: "Conditions et modalités de paiement",
+        paymentDueReceipt: "Le paiement est dû à réception",
+        paymentDue10Days: "Le paiement est dû dans 10 jours",
+        paymentDue15Days: "Le paiement est dû dans 15 jours",
+        paymentDue30Days: "Le paiement est dû dans 30 jours",
     },
 };
 
