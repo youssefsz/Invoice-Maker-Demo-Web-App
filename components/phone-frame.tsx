@@ -19,17 +19,18 @@ export function PhoneFrame({ children }: PhoneFrameProps) {
                 const vh = window.innerHeight;
                 const vw = window.innerWidth;
 
-                const padding = 40; // 20px padding on each side
-                const availableHeight = vh - padding * 2;
-                const availableWidth = vw - padding * 2;
+                // Reduce padding to maximize size on laptop screens (14-16 inch)
+                // Use smaller buffer (e.g. 24px total vertical instead of 80px)
+                const verticalBuffer = 24;
+                const horizontalBuffer = 40;
 
-                // Calculate max scale that fits both dimensions
-                // Cap max scale at 1.0 (original size) or 1.1 slightly larger? 
-                // User implied it should adjustments size, seemingly to fit.
-                // Let's allow it to slightly grow on huge screens but mostly shrink on smaller laptops.
+                const availableHeight = vh - verticalBuffer;
+                const availableWidth = vw - horizontalBuffer;
+
                 const scaleHeight = availableHeight / 844;
                 const scaleWidth = availableWidth / 390;
 
+                // Maintain aspect ratio and fit within screen
                 const newScale = Math.min(scaleHeight, scaleWidth);
                 setScale(newScale);
             } else {
