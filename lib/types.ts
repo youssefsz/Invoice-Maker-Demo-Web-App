@@ -57,6 +57,7 @@ export interface Invoice {
 
 // Currency options
 export const CURRENCIES = [
+    { code: "TND", symbol: "TND", name: "Tunisian Dinar" },
     { code: "USD", symbol: "$", name: "US Dollar" },
     { code: "EUR", symbol: "€", name: "Euro" },
     { code: "GBP", symbol: "£", name: "British Pound" },
@@ -66,7 +67,6 @@ export const CURRENCIES = [
     { code: "CHF", symbol: "CHF", name: "Swiss Franc" },
     { code: "CNY", symbol: "¥", name: "Chinese Yuan" },
     { code: "INR", symbol: "₹", name: "Indian Rupee" },
-    { code: "TND", symbol: "TND", name: "Tunisian Dinar" },
 ] as const;
 
 export type CurrencyCode = (typeof CURRENCIES)[number]["code"];
