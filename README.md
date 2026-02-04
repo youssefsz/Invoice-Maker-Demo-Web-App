@@ -1,10 +1,10 @@
-# Invoice Creator
+# Invoice-Maker-Demo-Web-App
 
 A professional web application designed to streamline the process of creating, managing, and tracking invoices. This application is built with modern web technologies, focusing on performance, user experience, and visual design.
 
 ## Overview
 
-Invoice Creator allows users to easily generate professional invoices, track their payment status, and manage company details. The application features a responsive design with smooth transitions and a clean user interface, making it suitable for freelancers and small businesses.
+Invoice-Maker-Demo-Web-App allows users to easily generate professional invoices, track their payment status, and manage company details. The application features a responsive design with smooth transitions and a clean user interface, making it suitable for freelancers and small businesses.
 
 ## Key Features
 
@@ -39,12 +39,12 @@ Ensure you have Node.js installed on your machine.
 
 1.  Clone the repository:
     ```bash
-    git clone <repository_url>
+    git clone https://github.com/youssefsz/Invoice-Maker-Demo-Web-App.git
     ```
 
 2.  Navigate to the project directory:
     ```bash
-    cd invoice-creator
+    cd Invoice-Maker-Demo-Web-App
     ```
 
 3.  Install dependencies:
